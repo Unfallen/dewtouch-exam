@@ -6,9 +6,11 @@
 			set_time_limit(0);
 			
 			$this->setFlash('Listing Record page too slow, try to optimize it.');
-			
-			
-			$records = $this->Record->find('all');
+
+            if (($records = Cache::read('records')) === false) {
+                $records = $this->Record->find('all', array('recursive'=>-1));
+                Cache::write('records', $records);
+            }
 			
 			$this->set('records',$records);
 			

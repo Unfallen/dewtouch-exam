@@ -21,7 +21,7 @@ Question: Advanced Input Field</div>
 <button class="close" data-dismiss="alert"></button>
 The table you start with</div>
 
-<table class="table table-striped table-bordered table-hover">
+<table id="order-table" class="table table-striped table-bordered table-hover">
 <thead>
 <th><span id="add_item_button" class="btn mini green addbutton" onclick="addToObj=false">
 											<i class="icon-plus"></i></span></th>
@@ -32,10 +32,10 @@ The table you start with</div>
 
 <tbody>
 	<tr>
-	<td></td>
-	<td><textarea name="data[1][description]" class="m-wrap  description required" rows="2" ></textarea></td>
-	<td><input name="data[1][quantity]" class=""></td>
-	<td><input name="data[1][unit_price]"  class=""></td>
+	    <td></td>
+        <td><p name="description_1'"></p></td>
+        <td><p name="quantity_'1"></p></td>
+        <td><p name="unit_price_1"></p></td>
 	
 </tr>
 
@@ -51,7 +51,7 @@ Video Instruction</div>
 
 <p style="text-align:left;">
 <video width="78%"   controls>
-  <source src="/video/q3_2.mov">
+  <source src="/dewtouch/video/q3_2.mov">
 Your browser does not support the video tag.
 </video>
 </p>
@@ -63,16 +63,46 @@ Your browser does not support the video tag.
 <?php $this->start('script_own');?>
 <script>
 $(document).ready(function(){
+    $('#order-table').on('click', 'td', function(){
+        var trIndex = ($(this).closest('tr').index()+1);
+        var tdIndex = ($(this).index()+1);
+
+        var $td = $(this);
+        if (tdIndex === 2) {
+            var val = $td.children().html();
+            $td.html('<textarea name="data['+trIndex+'][description]" class="m-wrap description required" rows="2" >'+ val+'</textarea>');
+            var $newE = $td.find('textarea');
+            $newE.focus();
+        }
+        if (tdIndex === 3) {
+            var val = $td.children().html();
+            $td.html('<input name="data['+trIndex+'][quantity]" value="'+val+'">');
+            var $newE = $td.find('input');
+            $newE.focus();
+        }
+        if (tdIndex === 4) {
+            var val = $td.children().html();
+            $td.html('<input name="data['+trIndex+'][unit_price]" value="'+val+'">');
+            var $newE = $td.find('input');
+            $newE.focus();
+        }
+        if (tdIndex !== 1) {
+            $newE.on('blur', function() {
+                $(this).parent().html('<p>'+$(this).val()+'</p>');
+            });
+        }
+    });
 
 	$("#add_item_button").click(function(){
-
-
-		alert("suppose to add a new row");
-		
-
-		});
-
-	
+        var rowCount = $("#order-table tr").length;
+        $("#order-table tr:last").after('' +
+            '<tr>' +
+            '<td></td>' +
+            '<td><p name="description_'+rowCount+'"></p></td>' +
+            '<td><p name="quantity_'+rowCount+'"></p></td>' +
+            '<td><p name="unit_price_'+rowCount+'"></p></td>' +
+            '</tr>');
+	});
 });
 </script>
 <?php $this->end();?>

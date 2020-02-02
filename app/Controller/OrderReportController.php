@@ -15,6 +15,7 @@
 
 
 			// To Do - write your own array in this format
+
 			$order_reports = array('Order 1' => array(
 										'Ingredient A' => 1,
 										'Ingredient B' => 12,
@@ -34,9 +35,28 @@
 								);
 
 			// ...
+            $orderArray = array();
+            foreach($orders as $order) {
+
+                $orderIngredientsArray = array();
+
+                foreach($order['OrderDetail'] as $orderDetail) {
+
+                    foreach($portions as $portion) {
+
+                        if ($portion['Item']['id'] == $orderDetail['item_id']) {
+                            foreach($portion['PortionDetail'] as $portionDetail) {
+                                $orderIngredientsArray[$portionDetail['Part']['name']] = $orderDetail['quantity'] * $portionDetail['value'];
+                            }
+                        }
+                    }
+                }
+
+                $orderArray[$order['Order']['name']] = $orderIngredientsArray;
+            }
+            $order_reports = $orderArray;
 
 			$this->set('order_reports',$order_reports);
-
 			$this->set('title',__('Orders Report'));
 		}
 
@@ -53,7 +73,7 @@
 
 			$this->loadModel('Portion');
 			$portions = $this->Portion->find('all',array('conditions'=>array('Portion.valid'=>1),'recursive'=>2));
-				
+
 			// debug($portions);exit;
 
 			$this->set('portions',$portions);
